@@ -182,6 +182,32 @@ let freeSerif=simpleFont "Free Serif"
 let freeSans=simpleFont "Free Sans"
 let freeMono=simpleFont "Free Mono"
 
+(** Default body font: [WenQuanYi Zen Hei] when available (package [fonts-wqy-zenhei]
+    on Debian/Ubuntu), else [alegreya]. Noto CJK [.ttc] is not used here: its CFF table
+    triggers a known limitation in [CFF.index].
+    Includes a [Caps] slot like [alegreya] (small caps), mapping to the regular face. *)
+let wenQuanYiZenHei =
+  let m = simpleFamilyMember in
+  let r () = Fonts.loadFont (findFont FontPattern.({ family="WenQuanYi Zen Hei"; slant=Roman; weight=Regular })) in
+  let i () = Fonts.loadFont (findFont FontPattern.({ family="WenQuanYi Zen Hei"; slant=Italic; weight=Regular })) in
+  let rb () = Fonts.loadFont (findFont FontPattern.({ family="WenQuanYi Zen Hei"; slant=Roman; weight=Bold })) in
+  let ib () = Fonts.loadFont (findFont FontPattern.({ family="WenQuanYi Zen Hei"; slant=Italic; weight=Bold })) in
+  [
+    Regular, (m r, m i);
+    Bold, (m rb, m ib);
+    Caps, (m r, m i);
+  ]
+
+let default_font_family =
+  try
+    ignore (findFont FontPattern.({ family="WenQuanYi Zen Hei"; slant=Roman; weight=Regular }));
+    wenQuanYiZenHei
+  with _ ->
+    if not !quiet then
+      Printf.eprintf
+        "Warning: WenQuanYi Zen Hei not found; CJK body text may show missing glyphs. Install fonts-wqy-zenhei (Debian/Ubuntu) or add --extra-fonts-dir with a folder containing wqy-zenhei.ttc.\n\
+         %!";
+    alegreya
 
 let all_fonts = [alegreya; texgyrecursor] (* trick to force same type *)
 
@@ -223,14 +249,14 @@ let stackCont drs=
   bB (fun env->[stackDrawings (List.map (fun x->drawing (draw env x)) drs)])
 
 let defaultEnv:environment=
-  let f,subst,pos=selectFont alegreya Regular false in
+  let f,subst,pos=selectFont default_font_family Regular false in
   let fsize=3.7 in
   let feat= [ Opentype.standardLigatures ] in
   let loaded_feat=Fonts.select_features f [ Opentype.standardLigatures ] in
   {
-    fontFamily=alegreya;
+    fontFamily=default_font_family;
     fontMonoFamily=bitstreamverasansmono (*texgyrecursor*);
-    fontMonoRatio=font_size_ratio alegreya bitstreamverasansmono (*texgyrecursor*);
+    fontMonoRatio=font_size_ratio default_font_family bitstreamverasansmono (*texgyrecursor*);
     fontItalic=false;
     fontAlternative=Regular;
     fontFeatures=feat;
