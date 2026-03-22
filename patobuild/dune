@@ -3,6 +3,5 @@
   (public_name patoline)
   (package patoline)
   (modules :standard)
-  (preprocess (action (run pa_ocaml %{input-file})))
-  (libraries unix threads earley.core earley.str earley.ocaml
+  (libraries unix threads earley.core earley.str patoline_ocaml
     patutil patconfig))
