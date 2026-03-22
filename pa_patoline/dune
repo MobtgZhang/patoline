@@ -1,8 +1,13 @@
+(library
+  (name pa_patoline_support)
+  (wrapped false)
+  (modules pa_patoline_ast_helpers)
+  (libraries earley.core earley.str patoline_ocaml patutil unicodelib patconfig))
+
 (executable
   (name pa_patoline)
   (public_name pa_patoline)
   (package patoline)
-  (modules :standard)
-  (preprocess (action (run pa_ocaml %{input-file})))
-  (libraries earley.core earley.str earley.ocaml
+  (modules pa_patoline prefixTree Subsup)
+  (libraries pa_patoline_support earley.core earley.str patoline_ocaml
     patutil unicodelib patconfig))
