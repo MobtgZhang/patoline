@@ -7,11 +7,12 @@ at https://patoline.github.io.
 ### Dependencies
 
 The minimal dependencies are
- - OCaml (version between 4.03.0 and 4.07.1)
- - Opam (version 2.0.0 or higher)
- - Dune (version 2.7.0  or higher)
+ - OCaml (4.14.2 or newer)
+ - Opam (2.5.0 or higher recommended)
+ - Dune (2.7.0 or higher)
  - Ocamlfind
- - Earley (version 2.0.0)
+ - Earley (3.0.0)
+ - stdlib-shims
  - Camlzip
  - Sqlite3
  - Imagelib
@@ -23,10 +24,12 @@ at http://opam.ocaml.org/doc/Install.html. You can then install an OCaml
 compiler and the required libraries as follows.
 
 ```bash
-opam switch 4.07.1
+opam switch create 4.14.2
 eval $(opam env)
-opam install dune earley.2.0.0 camlzip sqlite3 imagelib
+opam install dune earley.3.0.0 stdlib-shims camlzip sqlite3 imagelib
 ```
+
+**Note (earley 3.0):** Upstream earley 3.0.0 removed the `earley.ocaml` library from Opam; this tree ships the equivalent in `patoline_ocaml/` (using `compiler-libs.common`). Earley `parser` syntax in `patoline_ocaml/`, `pa_patoline/`, `unicodelib/`, `cesure/`, and `patobuild/` is checked in **already expanded** to plain OCaml, so **`dune build` does not invoke the `pa_ocaml` preprocessor**. To edit the original BNF-style sources, install earley and run `pa_ocaml` on the file, then replace the corresponding `.ml`.
 
 You can optionally install more Opam packages (OCaml libraries) depending
 on the Patoline drivers that you want to use. For instance, you will need
@@ -38,7 +41,7 @@ driver, ``cryptokit`` for our ``Patonet`` driver.
 Patoline can be compiled from source as follows:
 
 ```bash
-wget https://github.com/patoline/patoline/archive/master.zip
+wget https://github.com/mobtgzhang/patoline/archive/master.zip
 unzip master.zip
 cd patoline-master
 make
