@@ -1339,7 +1339,7 @@ let output' ?(structure:structure={name="";raw_name=[];metadata=[];tags=[];
              | ADDR_UNIX s    -> s
              | ADDR_INET(a,_) -> string_of_inet_addr a
            in
-           Printf.fprintf Pervasives.stderr "Trying connect to %s:%d\n%!"
+           Printf.fprintf Stdlib.stderr "Trying connect to %s:%d\n%!"
              str_addr port;
            let sock= socket addr.ai_family addr.ai_socktype 0 in
            try
