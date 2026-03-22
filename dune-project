@@ -27,9 +27,10 @@
    variety of output formats, including traditional PDF files, but also web
    servers that deliver dynamic contents.")
  (depends
-  (ocaml (>= 4.03.0))
+  (ocaml (>= 4.14.2))
   ocamlfind
-  (earley (= 2.0.0))
+  (earley (= 3.0.0))
+  (stdlib-shims (>= 0.1.0))
   camlzip
   sqlite3
   (imagelib (= 20180522)))
