@@ -23,7 +23,7 @@ open FTypes
 open FUtil
 open CFF
 
-let extensions = [".otf"; ".ttf"]
+let extensions = [".otf"; ".ttf"; ".ttc"]
 
 let offsetTable=12
 let dirSize=16
@@ -121,12 +121,19 @@ let cadratin f =
   Printf.printf "cadratin: %d\n%!" res;
   res
 
-let loadFont ?offset:(off=0) ?size:(_size=None) file=
+let rec loadFont ?offset:(off=0) ?size:(_size=None) file=
   let f = open_in_bin_cached file in
   let typ = Bytes.create 4 in
   seek_in f off;
   really_input f typ 0 4;
   match Bytes.to_string typ with
+  | "ttcf" ->
+      (* TrueType collection: use the first face (same as most system renderers). *)
+      seek_in f (off+8);
+      let _numFonts = readInt4_int f in
+      seek_in f (off+12);
+      let first_off = readInt4_int f in
+      loadFont ~offset:(off+first_off) file
   | "OTTO"  ->
      let (a,b)=tableLookup "CFF " f off in
      CFF {cff_font=CFF.loadFont file ~offset:(off+a) ~size:(Some b);cff_offset=off}

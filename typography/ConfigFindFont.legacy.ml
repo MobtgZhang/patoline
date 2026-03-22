@@ -62,6 +62,23 @@ let lmromancaps_variants = function
   | {family = _; slant = Italic; weight = Regular} -> "oblique"
   | _ -> raise Not_found
 
+(** WenQuanYi Zen Hei [.ttc] at common Linux paths (package [fonts-wqy-zenhei]). *)
+let wqy_zenhei_path _pat =
+  let fname = "wqy-zenhei.ttc" in
+  let dirs =
+    [
+      "/usr/share/fonts/truetype/wqy";
+      "/usr/local/share/fonts/truetype/wqy";
+    ]
+  in
+  let rec try_dir = function
+    | [] -> raise Not_found
+    | d :: ds ->
+        let p = Filename.concat d fname in
+        if Sys.file_exists p then p else try_dir ds
+  in
+  try_dir dirs
+
 let pat_to_name pat =
   match pat.family with
   | "Neo Euler" -> "Euler/euler.otf"
@@ -122,9 +139,12 @@ let pat_to_name pat =
 
   | "Free Mono" -> "FreeMono"^ (freesans_variants pat) ^ ".ttf"
 
-  | _ -> raise Not_found
+  | "WenQuanYi Zen Hei" -> wqy_zenhei_path pat
 
+  | _ -> raise Not_found
 
 let findFont pat =
   let open Patconfig.Config in
-  findFont (pat_to_name pat)
+  let name = pat_to_name pat in
+  if String.length name > 0 && name.[0] = '/' && Sys.file_exists name then name
+  else findFont name
