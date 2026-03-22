@@ -2,7 +2,7 @@
   (targets DefaultGrammar.ml DefaultGrammar_.ml DefaultGrammar.tgy quail.el)
   (action (with-stdout-to DefaultGrammar.ml
     (run pa_patoline --build-dir %{project_root}/grammars
-           --main --no-default-grammar --ascii
+           --main --no-default-grammar
            --quail-out ./quail.el
            ./DefaultGrammar.txp)))
   (deps ./DefaultGrammar.txp))

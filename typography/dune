@@ -1,7 +1,8 @@
 (library
   (name typography)
   (public_name patoline.typography)
-  (modules :standard)
+  ; Dev helper using Graphics; not required for the library (see optional exe below).
+  (modules :standard \ test_offset)
   (libraries
     patoraw patutil patconfig patfonts
     (select ConfigFindFont.ml from
